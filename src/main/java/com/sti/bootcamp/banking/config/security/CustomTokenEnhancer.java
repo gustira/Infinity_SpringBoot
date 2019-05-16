@@ -1,5 +1,10 @@
 package com.sti.bootcamp.banking.config.security;
 
+import com.sti.bootcamp.banking.db.dao.CustomerDao;
+import com.sti.bootcamp.banking.db.model.CustomerEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
@@ -21,11 +26,19 @@ public class CustomTokenEnhancer implements TokenEnhancer {
             .toInstant()
             .toEpochMilli();
 
+
+
     @Override
     public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
         Map<String, Object> additionalInfo = new HashMap<>();
+
+        UserDetails user = (UserDetails) authentication.getPrincipal();
+        CustomUser customer = (CustomUser) user;
+
         additionalInfo.put("generated_time", millis );
-//                "generated_time", authentication.getName());
+        additionalInfo.put("firstname", customer.getFirstName() );
+        additionalInfo.put("username", customer.getUsername() );
+        //                "generated_time", authentication.getName());
         ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
         return accessToken;
     }

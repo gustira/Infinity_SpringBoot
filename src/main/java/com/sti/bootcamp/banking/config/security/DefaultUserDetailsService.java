@@ -39,7 +39,8 @@ public class DefaultUserDetailsService implements UserDetailsService {
 	            throw new EntityNotFoundException("99"+"Failed");
 	        }
 	
-	        return new User(customer.getUsername(), String.format("{noop}%s", customer.getPassword()), getAuthority());   
+//	        return new User(customer.getUsername(), String.format("{noop}%s", customer.getPassword()), getAuthority());
+			return  new CustomUser(customer, getAuthority());
     	}catch (EntityNotFoundException e) {
     		throw new UsernameNotFoundException("Invalid username or password.");
 		}
